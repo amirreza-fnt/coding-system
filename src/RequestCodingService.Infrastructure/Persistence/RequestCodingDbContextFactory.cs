@@ -18,7 +18,7 @@ public sealed class RequestCodingDbContextFactory : IDesignTimeDbContextFactory<
             .Build();
 
         var connectionString = configuration.GetConnectionString("RequestCoding")
-            ?? "Server=localhost;Database=apiweb-requestcoding;Trusted_Connection=True;TrustServerCertificate=True";
+            ?? "Server=localhost;Database=apiweb-codingsystem;Trusted_Connection=True;TrustServerCertificate=True";
 
         var options = new DbContextOptionsBuilder<RequestCodingDbContext>()
             .UseSqlServer(connectionString)

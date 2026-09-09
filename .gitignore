@@ -15,5 +15,5 @@ obj/
 Thumbs.db
 .DS_Store
 
-## Secrets (use /etc/requestcodingservice.env on server)
+## Server-only env (real secrets on machine; example file is committed)
 deploy/requestcodingservice.env

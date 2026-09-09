@@ -6,8 +6,8 @@
 
 | مورد | نام |
 |------|-----|
-| دیتابیس | `apiweb-requestcoding` |
-| کاربر SQL | `apiwebrequestcodinguser` |
+| دیتابیس | `apiweb-codingsystem` |
+| کاربر SQL | `apiwebcodingsystemuser` |
 | دامنه API | `apiweb-requestcoding.sabzevar.ir` |
 
 ## ایده اصلی
