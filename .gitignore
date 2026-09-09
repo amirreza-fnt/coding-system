@@ -1,0 +1,19 @@
+## Build directories
+bin/
+obj/
+
+## IDE
+.vs/
+.idea/
+*.user
+*.suo
+
+## Logs
+*.log
+
+## OS
+Thumbs.db
+.DS_Store
+
+## Secrets (use /etc/requestcodingservice.env on server)
+deploy/requestcodingservice.env

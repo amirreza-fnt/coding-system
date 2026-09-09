@@ -1,0 +1,35 @@
+[Unit]
+Description=Request Coding Service (ASP.NET Core) - apiweb-137requestcoding.sabzevar.ir
+Documentation=https://apiweb-137requestcoding.sabzevar.ir:5019
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/requestcodingservice
+Environment=ASPNETCORE_ENVIRONMENT=Development
+Environment=ASPNETCORE_URLS=http://127.0.0.1:5019
+
+EnvironmentFile=-/etc/requestcodingservice.env
+
+Environment=Sso__BaseUrl=http://127.0.0.1:5001
+Environment=InternalAuth__ApiKeys__0__Key=dev-internal-key-137
+Environment=InternalAuth__ApiKeys__0__Name=InternalDev
+Environment=Swagger__Enabled=true
+
+ExecStart=/usr/bin/dotnet /opt/requestcodingservice/RequestCodingService.Api.dll
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+
+User=requestcodingservice
+Group=requestcodingservice
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/log/requestcodingservice
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
