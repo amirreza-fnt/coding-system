@@ -60,7 +60,7 @@ sudo systemctl status "$APP_NAME" --no-pager
 echo ""
 echo "============================================"
 echo "   Deploy complete!"
-echo "   Kestrel: http://127.0.0.1:5019"
+echo "   Kestrel: http://127.0.0.1:1519"
 echo "   Public:  https://apiweb-137requestcoding.sabzevar.ir:5019"
 echo "   Health:  https://apiweb-137requestcoding.sabzevar.ir:5019/health"
 echo "   Swagger: https://apiweb-137requestcoding.sabzevar.ir:5019/swagger"
