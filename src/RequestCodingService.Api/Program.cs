@@ -59,7 +59,7 @@ try
         {
             Title = "Request Coding Service API (سامانه کد پیگیری)",
             Version = "v1",
-            Description = "Centralized 5-digit tracking code service for Sabzevar Man systems (137, fire department, ...)."
+            Description = "Centralized 5-digit tracking code service for all Sabzevar Man systems (137, fire department, and others)."
         });
 
         c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

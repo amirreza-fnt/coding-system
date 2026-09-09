@@ -42,8 +42,8 @@ sudo ./deploy/deploy.sh
 ### ۴. بررسی سلامت
 
 ```bash
-curl -k https://apiweb-137requestcoding.sabzevar.ir:5019/health
-curl -k https://apiweb-137requestcoding.sabzevar.ir:5019/api/v1/systems
+curl -k https://apiweb-requestcoding.sabzevar.ir:5019/health
+curl -k https://apiweb-requestcoding.sabzevar.ir:5019/api/v1/systems
 ```
 
 ### ۵. لاگ
@@ -63,7 +63,7 @@ tail -f /var/log/requestcodingservice/app-*.log
 ## نمونه درخواست (تخصیص کد)
 
 ```bash
-curl -X POST https://apiweb-137requestcoding.sabzevar.ir:5019/api/v1/tracking-codes \
+curl -X POST https://apiweb-requestcoding.sabzevar.ir:5019/api/v1/tracking-codes \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: dev-internal-key-137" \
   -d '{
@@ -94,7 +94,7 @@ curl -X POST https://apiweb-137requestcoding.sabzevar.ir:5019/api/v1/tracking-co
 ## جستجوی اپراتور
 
 ```bash
-curl "https://apiweb-137requestcoding.sabzevar.ir:5019/api/v1/tracking-codes/search?systemId=1&counter=12345&lastName=محمدی" \
+curl "https://apiweb-requestcoding.sabzevar.ir:5019/api/v1/tracking-codes/search?systemId=1&counter=12345&lastName=محمدی" \
   -H "Authorization: Bearer YOUR_JWT"
 ```
 

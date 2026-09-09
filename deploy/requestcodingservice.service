@@ -1,6 +1,6 @@
 [Unit]
-Description=Request Coding Service (ASP.NET Core) - apiweb-137requestcoding.sabzevar.ir
-Documentation=https://apiweb-137requestcoding.sabzevar.ir:5019
+Description=Request Coding Service (ASP.NET Core) - سرویس متمرکز کد پیگیری — apiweb-requestcoding.sabzevar.ir
+Documentation=https://apiweb-requestcoding.sabzevar.ir:5019
 Wants=network-online.target
 After=network-online.target
 

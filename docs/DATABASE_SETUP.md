@@ -5,7 +5,7 @@
 ## ۱. ساخت دیتابیس
 
 ```sql
-CREATE DATABASE [apiweb-137requestcoding];
+CREATE DATABASE [apiweb-requestcoding];
 GO
 ```
 
@@ -15,19 +15,19 @@ GO
 USE [master];
 GO
 
-CREATE LOGIN [apiweb137requestcodinguser]
+CREATE LOGIN [apiwebrequestcodinguser]
 WITH PASSWORD = N'Rc#9kLm2@xQ7',
      CHECK_POLICY = ON,
      CHECK_EXPIRATION = OFF;
 GO
 
-USE [apiweb-137requestcoding];
+USE [apiweb-requestcoding];
 GO
 
-CREATE USER [apiweb137requestcodinguser] FOR LOGIN [apiweb137requestcodinguser];
+CREATE USER [apiwebrequestcodinguser] FOR LOGIN [apiwebrequestcodinguser];
 GO
 
-ALTER ROLE [db_owner] ADD MEMBER [apiweb137requestcodinguser];
+ALTER ROLE [db_owner] ADD MEMBER [apiwebrequestcodinguser];
 GO
 ```
 
@@ -36,14 +36,14 @@ GO
 | پارامتر | مقدار |
 |---------|--------|
 | **Server** | `185.255.91.242,2019` |
-| **Database** | `apiweb-137requestcoding` |
-| **User Id** | `apiweb137requestcodinguser` |
+| **Database** | `apiweb-requestcoding` |
+| **User Id** | `apiwebrequestcodinguser` |
 | **Password** | `Rc#9kLm2@xQ7` |
 
 ## ۴. Connection String
 
 ```
-Server=185.255.91.242,2019;Database=apiweb-137requestcoding;User Id=apiweb137requestcodinguser;Password=Rc#9kLm2@xQ7;Encrypt=True;TrustServerCertificate=True;Connection Timeout=15;Connect Retry Count=3;Pooling=true;Max Pool Size=100;MultipleActiveResultSets=true
+Server=185.255.91.242,2019;Database=apiweb-requestcoding;User Id=apiwebrequestcodinguser;Password=Rc#9kLm2@xQ7;Encrypt=True;TrustServerCertificate=True;Connection Timeout=15;Connect Retry Count=3;Pooling=true;Max Pool Size=100;MultipleActiveResultSets=true
 ```
 
 ## ۵. ایجاد جداول (Migration)
@@ -51,7 +51,7 @@ Server=185.255.91.242,2019;Database=apiweb-137requestcoding;User Id=apiweb137req
 پس از ساخت دیتابیس، روی سرور لینوکس:
 
 ```bash
-export ConnectionStrings__RequestCoding='Server=185.255.91.242,2019;Database=apiweb-137requestcoding;User Id=apiweb137requestcodinguser;Password=Rc#9kLm2@xQ7;Encrypt=True;TrustServerCertificate=True;TrustServerCertificate=True'
+export ConnectionStrings__RequestCoding='Server=185.255.91.242,2019;Database=apiweb-requestcoding;User Id=apiwebrequestcodinguser;Password=Rc#9kLm2@xQ7;Encrypt=True;TrustServerCertificate=True;TrustServerCertificate=True'
 
 cd /opt/requestcodingservice-repo   # مسیر clone شده
 dotnet ef database update \
