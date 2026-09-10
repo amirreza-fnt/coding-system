@@ -128,14 +128,20 @@ try
 
     app.UseSerilogRequestLogging();
 
-    if (app.Environment.IsDevelopment() || app.Configuration.GetValue("Swagger:Enabled", false))
+    app.UseRouting();
+
+    if (app.Configuration.GetValue("Swagger:Enabled", true)
+        || app.Environment.IsDevelopment())
     {
         app.UseSwagger();
-        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Request Coding Service v1"));
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Request Coding Service v1");
+            c.RoutePrefix = "swagger";
+        });
     }
 
     app.UseMiddleware<ExceptionHandlingMiddleware>();
-    app.UseRouting();
 
     if (app.Environment.IsDevelopment())
     {
@@ -145,6 +151,9 @@ try
     {
         app.UseCors("AllowFrontend");
     }
+
+    app.MapGet("/", () => Results.Redirect("/swagger/index.html"));
+    app.MapGet("/swagger", () => Results.Redirect("/swagger/index.html"));
 
     app.MapControllers();
     app.MapHealthChecks("/health");

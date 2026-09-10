@@ -66,7 +66,36 @@ allow_selinux_http_port() {
   fi
 }
 
-verify_deploy() {
+apply_schema_sql() {
+  if [ ! -f "$REPO_DIR/deploy/initial-schema.sql" ]; then
+    return 0
+  fi
+  if ! command -v sqlcmd >/dev/null 2>&1; then
+    echo "  sqlcmd not found — run deploy/initial-schema.sql once in SSMS."
+    return 0
+  fi
+
+  local conn
+  conn="$(grep -E '^ConnectionStrings__RequestCoding=' /etc/requestcodingservice.env 2>/dev/null | cut -d= -f2- | tr -d '"' || true)"
+  if [ -z "$conn" ]; then
+    echo "  WARNING: no connection string in /etc/requestcodingservice.env"
+    return 0
+  fi
+
+  local server db user pass
+  server="$(echo "$conn" | sed -n 's/.*Server=\([^;]*\).*/\1/p')"
+  db="$(echo "$conn" | sed -n 's/.*Database=\([^;]*\).*/\1/p')"
+  user="$(echo "$conn" | sed -n 's/.*User Id=\([^;]*\).*/\1/p')"
+  pass="$(echo "$conn" | sed -n 's/.*Password=\([^;]*\).*/\1/p')"
+
+  echo "  Applying initial-schema.sql to ${db}..."
+  if sqlcmd -S "$server" -d "$db" -U "$user" -P "$pass" -C -b -i "$REPO_DIR/deploy/initial-schema.sql"; then
+    echo "  Database schema OK."
+  else
+    echo "  WARNING: schema apply failed — run deploy/initial-schema.sql in SSMS."
+  fi
+}
+
   echo "  Verifying listeners..."
   if sudo nginx -T 2>/dev/null | grep -q "listen ${PUBLIC_PORT}"; then
     echo "  nginx config includes listen ${PUBLIC_PORT}"
@@ -80,10 +109,10 @@ verify_deploy() {
   else
     echo "  WARNING: Kestrel health failed — check: journalctl -u ${APP_NAME} -n 50"
   fi
-  if curl -ksf "https://127.0.0.1:${PUBLIC_PORT}/health" >/dev/null; then
-    echo "  nginx health OK on https://127.0.0.1:${PUBLIC_PORT}"
+  if curl -sf "http://127.0.0.1:${PUBLIC_PORT}/health" >/dev/null; then
+    echo "  nginx health OK on http://127.0.0.1:${PUBLIC_PORT}"
   else
-    echo "  WARNING: nginx HTTPS health failed on port ${PUBLIC_PORT}"
+    echo "  WARNING: nginx health failed on port ${PUBLIC_PORT}"
   fi
 }
 
@@ -121,7 +150,7 @@ if command -v dotnet >/dev/null 2>&1 && dotnet ef --version >/dev/null 2>&1; the
   fi
 else
   echo "  dotnet-ef not installed on this server (normal for offline deploy)."
-  echo "  Run deploy/initial-schema.sql once in SSMS on apiweb-codingsystem."
+  apply_schema_sql
 fi
 
 echo "[3/5] nginx..."
@@ -156,8 +185,8 @@ echo ""
 echo "============================================"
 echo "   Deploy complete!"
 echo "   Kestrel: http://127.0.0.1:${KESTREL_PORT}"
-echo "   Health:  curl -k https://SERVER_IP:${PUBLIC_PORT}/health"
-echo "   Swagger: curl -k https://SERVER_IP:${PUBLIC_PORT}/swagger"
+echo "   Health:  curl http://SERVER_IP:${PUBLIC_PORT}/health"
+echo "   Swagger: curl http://SERVER_IP:${PUBLIC_PORT}/swagger"
 echo "   Ports saved in: ${PORT_FILE}"
 echo "============================================"
 echo "Logs: sudo journalctl -u $APP_NAME -f"

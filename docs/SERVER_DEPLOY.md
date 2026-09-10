@@ -66,12 +66,12 @@ tail -f /var/log/requestcodingservice/app-*.log
 | سرویس | پورت |
 |--------|------|
 | Kestrel (داخلی) | `15021` (یا `15025` اگر 5021 اشغال باشد) |
-| nginx (عمومی HTTPS) | `5021` (fallback: `5025`) |
+| nginx (عمومی HTTP) | `5021` (fallback: `5025`) |
 
 ## نمونه درخواست (تخصیص کد)
 
 ```bash
-curl -X POST https://apiweb-requestcoding.sabzevar.ir:5021/api/v1/tracking-codes \
+curl -X POST http://192.168.1.12:5021/api/v1/tracking-codes \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: dev-internal-key-137" \
   -d '{
@@ -102,7 +102,7 @@ curl -X POST https://apiweb-requestcoding.sabzevar.ir:5021/api/v1/tracking-codes
 ## جستجوی اپراتور
 
 ```bash
-curl "https://apiweb-requestcoding.sabzevar.ir:5021/api/v1/tracking-codes/search?systemId=1&counter=12345&lastName=محمدی" \
+curl "http://192.168.1.12:5021/api/v1/tracking-codes/search?systemId=1&counter=12345&lastName=محمدی" \
   -H "Authorization: Bearer YOUR_JWT"
 ```
 
