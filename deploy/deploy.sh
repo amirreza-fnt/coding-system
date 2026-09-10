@@ -25,8 +25,16 @@ port_in_use() {
 pick_ports() {
   PUBLIC_PORT=5021
   KESTREL_PORT=15021
+
   if port_in_use 5021; then
-    echo "  Port 5021 is in use — falling back to 5025."
+    local owner
+    owner="$(ss -tlnpH 2>/dev/null | grep -E ':5021 ' || true)"
+    if echo "$owner" | grep -q 'nginx'; then
+      echo "  Port 5021 already used by nginx — will reuse for this service."
+      return 0
+    fi
+
+    echo "  Port 5021 is in use by another process — falling back to 5025."
     PUBLIC_PORT=5025
     KESTREL_PORT=15025
     if port_in_use 5025; then
