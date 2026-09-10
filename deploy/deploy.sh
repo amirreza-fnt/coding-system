@@ -96,6 +96,7 @@ apply_schema_sql() {
   fi
 }
 
+verify_deploy() {
   echo "  Verifying listeners..."
   if sudo nginx -T 2>/dev/null | grep -q "listen ${PUBLIC_PORT}"; then
     echo "  nginx config includes listen ${PUBLIC_PORT}"
