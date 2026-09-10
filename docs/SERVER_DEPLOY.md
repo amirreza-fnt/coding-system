@@ -31,8 +31,10 @@ sudo chown root:requestcodingservice /etc/requestcodingservice.env
 
 ```bash
 chmod +x deploy/deploy.sh
-sudo ./deploy/deploy.sh
+sudo bash deploy/deploy.sh
 ```
+
+اگر `command not found` دیدید، حتماً با `bash deploy/deploy.sh` اجرا کنید (مشکل line-ending ویندوز).
 
 اسکریپت:
 1. از پوشه `publish/` (بیلد از قبل) یا `dotnet publish` استفاده می‌کند
