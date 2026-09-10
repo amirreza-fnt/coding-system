@@ -15,7 +15,7 @@
 
 ```bash
 cd /opt
-sudo git clone https://github.com/YOUR_ORG/request-coding-service.git requestcodingservice-repo
+sudo git clone https://github.com/amirreza-fnt/coding-system.git requestcodingservice-repo
 cd requestcodingservice-repo
 ```
 
