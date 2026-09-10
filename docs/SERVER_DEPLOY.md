@@ -41,10 +41,16 @@ sudo ./deploy/deploy.sh
 
 ### ۴. بررسی سلامت
 
+روی شبکه داخلی (بدون DNS):
+
 ```bash
-curl -k https://apiweb-requestcoding.sabzevar.ir:5019/health
-curl -k https://apiweb-requestcoding.sabzevar.ir:5019/api/v1/systems
+curl -k https://192.168.1.12:5019/health
+curl -k https://192.168.1.12:5019/api/v1/systems
 ```
+
+> پورت **5019** با **HTTPS** است — `http://` خطای 400 می‌دهد.
+
+اگر `dotnet-ef` روی سرور نیست، یک‌بار `deploy/initial-schema.sql` را در SSMS اجرا کنید، بعد `./deploy/deploy.sh` را دوباره بزنید.
 
 ### ۵. لاگ
 
