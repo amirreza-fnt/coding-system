@@ -1,8 +1,8 @@
-# Request Coding Service - Reverse Proxy (سرویس متمرکز کد پیگیری — همه سامانه‌ها)
-# https://apiweb-requestcoding.sabzevar.ir:5019  ->  Kestrel 127.0.0.1:1519
+# Request Coding Service - Reverse Proxy
+# PUBLIC: __PUBLIC_PORT__ (HTTPS)  ->  Kestrel 127.0.0.1:__KESTREL_PORT__
 
 upstream requestcodingservice {
-    server 127.0.0.1:1519;
+    server 127.0.0.1:__KESTREL_PORT__;
     keepalive 64;
 }
 
@@ -10,12 +10,12 @@ server {
     listen 80;
     listen [::]:80;
     server_name apiweb-requestcoding.sabzevar.ir;
-    return 301 https://$host:5019$request_uri;
+    return 301 https://$host:__PUBLIC_PORT__$request_uri;
 }
 
 server {
-    listen 5019 ssl http2;
-    listen [::]:5019 ssl http2;
+    listen __PUBLIC_PORT__ ssl http2;
+    listen [::]:__PUBLIC_PORT__ ssl http2;
     server_name apiweb-requestcoding.sabzevar.ir;
 
     ssl_certificate     /etc/letsencrypt/live/apiweb-137request.sabzevar.ir/fullchain.pem;

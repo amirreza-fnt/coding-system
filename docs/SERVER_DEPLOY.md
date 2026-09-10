@@ -44,11 +44,12 @@ sudo ./deploy/deploy.sh
 روی شبکه داخلی (بدون DNS):
 
 ```bash
-curl -k https://192.168.1.12:5019/health
-curl -k https://192.168.1.12:5019/api/v1/systems
+curl -k https://192.168.1.12:5021/health
+curl -k https://192.168.1.12:5021/api/v1/systems
 ```
 
-> پورت **5019** با **HTTPS** است — `http://` خطای 400 می‌دهد.
+> پورت **5021** با **HTTPS** است (اگر اشغال بود deploy خودکار **5025** می‌گذارد). `http://` خطای 400 می‌دهد.
+> پورت انتخاب‌شده در `/etc/requestcodingservice.port` ذخیره می‌شود.
 
 اگر `dotnet-ef` روی سرور نیست، یک‌بار `deploy/initial-schema.sql` را در SSMS اجرا کنید، بعد `./deploy/deploy.sh` را دوباره بزنید.
 
@@ -63,13 +64,13 @@ tail -f /var/log/requestcodingservice/app-*.log
 
 | سرویس | پورت |
 |--------|------|
-| Kestrel (داخلی) | `127.0.0.1:1519` |
-| nginx (عمومی) | `5019` (HTTPS) |
+| Kestrel (داخلی) | `15021` (یا `15025` اگر 5021 اشغال باشد) |
+| nginx (عمومی HTTPS) | `5021` (fallback: `5025`) |
 
 ## نمونه درخواست (تخصیص کد)
 
 ```bash
-curl -X POST https://apiweb-requestcoding.sabzevar.ir:5019/api/v1/tracking-codes \
+curl -X POST https://apiweb-requestcoding.sabzevar.ir:5021/api/v1/tracking-codes \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: dev-internal-key-137" \
   -d '{
@@ -100,7 +101,7 @@ curl -X POST https://apiweb-requestcoding.sabzevar.ir:5019/api/v1/tracking-codes
 ## جستجوی اپراتور
 
 ```bash
-curl "https://apiweb-requestcoding.sabzevar.ir:5019/api/v1/tracking-codes/search?systemId=1&counter=12345&lastName=محمدی" \
+curl "https://apiweb-requestcoding.sabzevar.ir:5021/api/v1/tracking-codes/search?systemId=1&counter=12345&lastName=محمدی" \
   -H "Authorization: Bearer YOUR_JWT"
 ```
 
