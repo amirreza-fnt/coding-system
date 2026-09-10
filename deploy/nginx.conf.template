@@ -14,8 +14,8 @@ server {
 }
 
 server {
-    listen __PUBLIC_PORT__ ssl http2;
-    listen [::]:__PUBLIC_PORT__ ssl http2;
+    listen __PUBLIC_PORT__ ssl http2 default_server;
+    listen [::]:__PUBLIC_PORT__ ssl http2 default_server;
     server_name apiweb-requestcoding.sabzevar.ir;
 
     ssl_certificate     /etc/letsencrypt/live/apiweb-137request.sabzevar.ir/fullchain.pem;
