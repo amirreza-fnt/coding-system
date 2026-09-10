@@ -18,8 +18,8 @@ server {
     listen [::]:__PUBLIC_PORT__ ssl http2 default_server;
     server_name apiweb-requestcoding.sabzevar.ir;
 
-    ssl_certificate     /etc/letsencrypt/live/apiweb-137request.sabzevar.ir/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/apiweb-137request.sabzevar.ir/privkey.pem;
+    ssl_certificate     __SSL_CERT__;
+    ssl_certificate_key __SSL_KEY__;
     ssl_protocols TLSv1.2 TLSv1.3;
 
     client_max_body_size 10m;

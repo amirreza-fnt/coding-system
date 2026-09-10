@@ -36,12 +36,42 @@ pick_ports() {
   fi
 }
 
+resolve_ssl_certs() {
+  local candidates=(
+    "/etc/nginx/ssl/fullchain.crt|/etc/nginx/ssl/private.key"
+    "/etc/nginx/ssl/cert.crt|/etc/nginx/ssl/cert.rsa"
+    "/etc/letsencrypt/live/apiweb-137request.sabzevar.ir/fullchain.pem|/etc/letsencrypt/live/apiweb-137request.sabzevar.ir/privkey.pem"
+  )
+
+  for pair in "${candidates[@]}"; do
+    local cert="${pair%%|*}"
+    local key="${pair##*|}"
+    if [ -f "$cert" ] && [ -f "$key" ]; then
+      SSL_CERT="$cert"
+      SSL_KEY="$key"
+      echo "  Using SSL cert: ${SSL_CERT}"
+      return 0
+    fi
+  done
+
+  echo "  No existing SSL cert found — generating self-signed certificate..."
+  sudo mkdir -p /etc/nginx/ssl
+  SSL_CERT="/etc/nginx/ssl/requestcoding.crt"
+  SSL_KEY="/etc/nginx/ssl/requestcoding.key"
+  sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+    -keyout "$SSL_KEY" \
+    -out "$SSL_CERT" \
+    -subj "/CN=192.168.1.12/O=RequestCodingService" 2>/dev/null
+}
+
 render_template() {
   local src="$1"
   local dest="$2"
   sed \
     -e "s/__PUBLIC_PORT__/${PUBLIC_PORT}/g" \
     -e "s/__KESTREL_PORT__/${KESTREL_PORT}/g" \
+    -e "s|__SSL_CERT__|${SSL_CERT}|g" \
+    -e "s|__SSL_KEY__|${SSL_KEY}|g" \
     "$src" | sudo tee "$dest" >/dev/null
 }
 
@@ -64,6 +94,11 @@ allow_selinux_http_port() {
 
 verify_deploy() {
   echo "  Verifying listeners..."
+  if sudo nginx -T 2>/dev/null | grep -q "listen ${PUBLIC_PORT} ssl"; then
+    echo "  nginx config includes listen ${PUBLIC_PORT} ssl"
+  else
+    echo "  WARNING: nginx config missing listen ${PUBLIC_PORT} — check ${NGINX_CONF}"
+  fi
   ss -tln | grep -E ":${PUBLIC_PORT}|:${KESTREL_PORT}" || echo "  WARNING: expected ports not listening yet."
   sleep 2
   if curl -sf "http://127.0.0.1:${KESTREL_PORT}/health" >/dev/null; then
@@ -85,6 +120,7 @@ echo "============================================"
 pick_ports
 echo "  Public HTTPS port: ${PUBLIC_PORT}"
 echo "  Kestrel port:      ${KESTREL_PORT}"
+resolve_ssl_certs
 echo "${PUBLIC_PORT} ${KESTREL_PORT}" | sudo tee "$PORT_FILE" >/dev/null
 
 if [ -d "$PUBLISH_DIR" ] && [ -f "$PUBLISH_DIR/RequestCodingService.Api.dll" ]; then
@@ -117,9 +153,12 @@ fi
 
 echo "[3/5] nginx..."
 render_template "$REPO_DIR/deploy/nginx.conf.template" "$NGINX_CONF"
-# RHEL/CentOS loads conf.d by default; remove stale sites-available symlink if any.
 sudo rm -f /etc/nginx/sites-enabled/apiweb-requestcoding 2>/dev/null || true
-sudo nginx -t && sudo systemctl reload nginx
+if ! sudo nginx -t; then
+  echo "  ERROR: nginx config invalid — fix ${NGINX_CONF} and retry."
+  exit 1
+fi
+sudo systemctl reload nginx
 open_firewall_port
 allow_selinux_http_port
 
