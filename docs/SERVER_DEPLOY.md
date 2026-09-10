@@ -43,15 +43,14 @@ sudo bash deploy/deploy.sh
 
 ### ۴. بررسی سلامت
 
-روی شبکه داخلی (بدون DNS):
+روی شبکه داخلی (HTTP — بدون SSL):
 
 ```bash
-curl -k https://192.168.1.12:5021/health
-curl -k https://192.168.1.12:5021/api/v1/systems
+curl http://192.168.1.12:5021/health
+curl http://192.168.1.12:5021/api/v1/systems
 ```
 
-> پورت **5021** با **HTTPS** است (اگر اشغال بود deploy خودکار **5025** می‌گذارد). `http://` خطای 400 می‌دهد.
-> پورت انتخاب‌شده در `/etc/requestcodingservice.port` ذخیره می‌شود.
+> پورت **5021** با **HTTP** است (fallback deploy: **5025**).
 
 اگر `dotnet-ef` روی سرور نیست، یک‌بار `deploy/initial-schema.sql` را در SSMS اجرا کنید، بعد `./deploy/deploy.sh` را دوباره بزنید.
 

@@ -1,5 +1,5 @@
-# Request Coding Service - Reverse Proxy
-# PUBLIC: __PUBLIC_PORT__ (HTTPS)  ->  Kestrel 127.0.0.1:__KESTREL_PORT__
+# Request Coding Service - Reverse Proxy (HTTP only)
+# PUBLIC: __PUBLIC_PORT__  ->  Kestrel 127.0.0.1:__KESTREL_PORT__
 
 upstream requestcodingservice {
     server 127.0.0.1:__KESTREL_PORT__;
@@ -7,20 +7,9 @@ upstream requestcodingservice {
 }
 
 server {
-    listen 80;
-    listen [::]:80;
-    server_name apiweb-requestcoding.sabzevar.ir;
-    return 301 https://$host:__PUBLIC_PORT__$request_uri;
-}
-
-server {
-    listen __PUBLIC_PORT__ ssl http2 default_server;
-    listen [::]:__PUBLIC_PORT__ ssl http2 default_server;
-    server_name apiweb-requestcoding.sabzevar.ir;
-
-    ssl_certificate     __SSL_CERT__;
-    ssl_certificate_key __SSL_KEY__;
-    ssl_protocols TLSv1.2 TLSv1.3;
+    listen __PUBLIC_PORT__ default_server;
+    listen [::]:__PUBLIC_PORT__ default_server;
+    server_name apiweb-requestcoding.sabzevar.ir _;
 
     client_max_body_size 10m;
 
