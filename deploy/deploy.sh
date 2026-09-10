@@ -5,7 +5,7 @@ APP_NAME="requestcodingservice"
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 API_DIR="/opt/$APP_NAME"
 SERVICE_FILE="/etc/systemd/system/$APP_NAME.service"
-NGINX_CONF="/etc/nginx/sites-available/apiweb-requestcoding"
+NGINX_CONF="/etc/nginx/conf.d/apiweb-requestcoding.conf"
 PUBLISH_DIR="$REPO_DIR/publish"
 PORT_FILE="/etc/requestcodingservice.port"
 
@@ -117,7 +117,8 @@ fi
 
 echo "[3/5] nginx..."
 render_template "$REPO_DIR/deploy/nginx.conf.template" "$NGINX_CONF"
-sudo ln -sf "$NGINX_CONF" /etc/nginx/sites-enabled/
+# RHEL/CentOS loads conf.d by default; remove stale sites-available symlink if any.
+sudo rm -f /etc/nginx/sites-enabled/apiweb-requestcoding 2>/dev/null || true
 sudo nginx -t && sudo systemctl reload nginx
 open_firewall_port
 allow_selinux_http_port
@@ -137,6 +138,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable "$APP_NAME"
 sudo systemctl restart "$APP_NAME"
 sudo systemctl status "$APP_NAME" --no-pager || true
+verify_deploy
 
 echo ""
 echo "============================================"
